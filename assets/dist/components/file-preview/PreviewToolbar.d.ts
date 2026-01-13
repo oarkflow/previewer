@@ -1,0 +1,37 @@
+import React from 'react';
+import { FileCategory } from '@/types/file-preview';
+interface PreviewToolbarProps {
+    fileName: string;
+    fileSize: number;
+    fileCategory: FileCategory;
+    zoom: number;
+    rotation: number;
+    currentPage: number;
+    totalPages: number;
+    searchQuery: string;
+    searchMatchCount?: number;
+    currentSearchMatch?: number;
+    showZoom?: boolean;
+    showRotation?: boolean;
+    showPagination?: boolean;
+    showSearch?: boolean;
+    showPrint?: boolean;
+    showDownload?: boolean;
+    onZoomIn: () => void;
+    onZoomOut: () => void;
+    onResetZoom?: () => void;
+    onRotateLeft: () => void;
+    onRotateRight: () => void;
+    onPrevPage: () => void;
+    onNextPage: () => void;
+    onSearchChange: (query: string) => void;
+    onPrevSearchMatch?: () => void;
+    onNextSearchMatch?: () => void;
+    onDownload: () => void;
+    onPrint?: () => void;
+    onClose: () => void;
+    onFullscreen?: () => void;
+    securitySlot?: React.ReactNode;
+}
+export declare const PreviewToolbar: React.FC<PreviewToolbarProps>;
+export {};

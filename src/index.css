@@ -1,0 +1,267 @@
+/* Security note: do not load remote fonts in secure preview mode.
+  Use system fonts (and fall back to any locally installed Inter/JetBrains Mono). */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 47% 13%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 15%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 187 85% 53%;
+    --primary-foreground: 222 47% 11%;
+
+    --secondary: 222 47% 18%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 222 30% 20%;
+    --muted-foreground: 215 20% 55%;
+
+    --accent: 270 70% 60%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 222 30% 22%;
+    --input: 222 30% 22%;
+    --ring: 187 85% 53%;
+
+    --radius: 0.75rem;
+
+    /* Custom tokens */
+    --success: 142 76% 36%;
+    --success-foreground: 210 40% 98%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 222 47% 11%;
+
+    /* Preview specific */
+    --preview-bg: 222 47% 9%;
+    --preview-surface: 222 47% 14%;
+    --preview-border: 222 30% 25%;
+    --preview-highlight: 187 85% 53%;
+
+    /* Toolbar */
+    --toolbar-bg: 222 47% 12%;
+    --toolbar-hover: 222 47% 18%;
+
+    /* Code colors */
+    --code-bg: 222 47% 8%;
+    --code-line-number: 215 20% 40%;
+    --code-keyword: 270 70% 65%;
+    --code-string: 142 76% 56%;
+    --code-function: 187 85% 60%;
+    --code-comment: 215 20% 45%;
+
+    /* Glassmorphism */
+    --glass-bg: 222 47% 15% / 0.8;
+    --glass-border: 222 30% 30% / 0.5;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px hsl(222 47% 5% / 0.3);
+    --shadow-md: 0 4px 6px -1px hsl(222 47% 5% / 0.4), 0 2px 4px -2px hsl(222 47% 5% / 0.3);
+    --shadow-lg: 0 10px 15px -3px hsl(222 47% 5% / 0.5), 0 4px 6px -4px hsl(222 47% 5% / 0.4);
+    --shadow-glow: 0 0 20px hsl(187 85% 53% / 0.2);
+
+    --sidebar-background: 222 47% 10%;
+    --sidebar-foreground: 210 40% 90%;
+    --sidebar-primary: 187 85% 53%;
+    --sidebar-primary-foreground: 222 47% 11%;
+    --sidebar-accent: 222 47% 18%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 222 30% 22%;
+    --sidebar-ring: 187 85% 53%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer components {
+  .glass {
+    background: hsl(var(--glass-bg));
+    backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--glass-border));
+  }
+
+  .preview-container {
+    background: hsl(var(--preview-bg));
+    border: 1px solid hsl(var(--preview-border));
+    border-radius: var(--radius);
+  }
+
+  .toolbar-button {
+    @apply flex items-center justify-center p-2 rounded-md transition-all duration-200;
+    background: transparent;
+  }
+
+  .toolbar-button:hover {
+    background: hsl(var(--toolbar-hover));
+  }
+
+  .toolbar-button:active {
+    transform: scale(0.95);
+  }
+
+  .toolbar-button.active {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
+  .file-drop-zone {
+    @apply relative flex flex-col items-center justify-center p-12 rounded-xl transition-all duration-300;
+    background: hsl(var(--card));
+    border: 2px dashed hsl(var(--border));
+  }
+
+  .file-drop-zone.active {
+    border-color: hsl(var(--primary));
+    background: hsl(var(--secondary));
+    box-shadow: var(--shadow-glow);
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground));
+    border-radius: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--foreground) / 0.5);
+  }
+
+  /* Code highlighting overrides */
+  .code-preview pre {
+    background: hsl(var(--code-bg)) !important;
+    padding: 1rem;
+    border-radius: var(--radius);
+    overflow-x: auto;
+  }
+
+  .code-preview .line-number {
+    color: hsl(var(--code-line-number));
+    user-select: none;
+  }
+
+  /* PDF specific styles */
+  .react-pdf__Page {
+    margin-bottom: 1rem;
+  }
+
+  .react-pdf__Page__canvas {
+    margin: 0 auto;
+    border-radius: 4px;
+  }
+
+  /* Table styles */
+  .data-table {
+    @apply w-full text-sm;
+  }
+
+  .data-table th {
+    @apply sticky top-0 px-4 py-3 text-left font-semibold;
+    background: hsl(var(--secondary));
+  }
+
+  .data-table td {
+    @apply px-4 py-2 border-b;
+    border-color: hsl(var(--border));
+  }
+
+  .data-table tr:hover td {
+    background: hsl(var(--muted) / 0.5);
+  }
+
+  /* Animations */
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 hsl(187 85% 53% / 0.4); }
+    50% { box-shadow: 0 0 20px 5px hsl(187 85% 53% / 0.2); }
+  }
+
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.3s ease-out;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.2s ease-out;
+  }
+
+  /* ============ SECURITY PROTECTION STYLES ============ */
+
+  /* Success/Warning colors for security indicators */
+  .bg-success {
+    background-color: hsl(var(--success));
+  }
+
+  .text-success {
+    color: hsl(var(--success));
+  }
+
+  .bg-warning {
+    background-color: hsl(var(--warning));
+  }
+
+  .text-warning {
+    color: hsl(var(--warning));
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(187 85% 40%) 100%);
+  }
+
+  .bg-gradient-surface {
+    background: linear-gradient(180deg, hsl(var(--card)) 0%, hsl(var(--background)) 100%);
+  }
+}
