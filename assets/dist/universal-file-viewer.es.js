@@ -34960,11 +34960,11 @@ const ZEe = ({ category: e, className: t }) => {
       !isNaN(V) && V > 0 && e.onZoomChange(V), u(!0);
     }
   }, [a, r, e, o]), N.useEffect(() => {
-    const R = e.file.data instanceof Blob ? e.file.data : new Blob([e.file.data]), F = URL.createObjectURL(R);
+    const R = e.file.data instanceof Blob ? e.file.data : new Blob([e.file.data], { type: e.file.type || "image/png" }), F = URL.createObjectURL(R);
     return n(F), () => {
       URL.revokeObjectURL(F);
     };
-  }, [e.file.data]), N.useEffect(() => {
+  }, [e.file.data, e.file.type]), N.useEffect(() => {
     e.zoom === 1 && g({ x: 0, y: 0 });
   }, [e.zoom]);
   const x = (R) => {
