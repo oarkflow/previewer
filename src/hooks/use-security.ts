@@ -1,8 +1,9 @@
 import { useEffect, useCallback, useRef, useState } from 'react';
-import { SecurityConfig, SecurityEvent, SecurityEventType } from '@/types/security';
+import { SecurityConfig, SecurityEvent, SecurityEventType, DEFAULT_SECURITY_CONFIG } from '@/types/security';
+import { getGlobalReporter, SecurityIncidents } from '@/lib/security-api';
 
 interface UseSecurityOptions {
-    config: SecurityConfig;
+    config?: SecurityConfig;
     fileId?: string;
     sessionId?: string;
     onSecurityEvent?: (event: SecurityEvent) => void;
@@ -20,12 +21,15 @@ interface UseSecurityOptions {
  * - Activity logging
  */
 export function useSecurity({
-    config,
+    config: providedConfig,
     fileId = 'unknown',
     sessionId = generateSessionId(),
     onSecurityEvent,
     onSecurityViolation,
 }: UseSecurityOptions) {
+    // Ensure config is never null/undefined
+    const config = providedConfig || DEFAULT_SECURITY_CONFIG;
+
     const sessionIdRef = useRef(sessionId);
     const eventQueueRef = useRef<SecurityEvent[]>([]);
     const [devToolsOpen, setDevToolsOpen] = useState(false);
@@ -45,10 +49,10 @@ export function useSecurity({
         eventQueueRef.current.push(event);
         onSecurityEvent?.(event);
 
-        if (config.activityLogging) {
+        if (config?.activityLogging) {
             console.debug('[Security Event]', type, metadata);
         }
-    }, [fileId, config.activityLogging, onSecurityEvent]);
+    }, [fileId, config?.activityLogging, onSecurityEvent]);
 
     // Alert for security violations
     const alertViolation = useCallback((type: SecurityEventType, message: string) => {
@@ -62,6 +66,36 @@ export function useSecurity({
 
         logEvent(type, { message, blocked: true });
         onSecurityViolation?.(type, message);
+
+        // Send to backend
+        const incidentMap: Record<SecurityEventType, () => any> = {
+            'copy_attempt': () => SecurityIncidents.copyAttempt({ fileId, sessionId }),
+            'screenshot_attempt': () => SecurityIncidents.screenshotAttempt({ fileId, sessionId }),
+            'print_attempt': () => SecurityIncidents.printAttempt({ fileId, sessionId }),
+            'download_attempt': () => SecurityIncidents.downloadAttempt({ fileId, sessionId }),
+            'dev_tools_detected': () => SecurityIncidents.devToolsDetected({ fileId, sessionId }),
+            'context_menu_blocked': () => SecurityIncidents.contextMenuBlocked({ fileId, sessionId }),
+            'session_expired': () => SecurityIncidents.sessionExpired({ fileId, sessionId }),
+            'visibility_changed': () => SecurityIncidents.visibilityChanged(false, { fileId, sessionId }),
+            'file_opened': () => ({
+                incident_type: 'file_opened',
+                severity: 'low' as const,
+                message: 'File opened',
+                details: { fileId, sessionId },
+            }),
+            'file_closed': () => ({
+                incident_type: 'file_closed',
+                severity: 'low' as const,
+                message: 'File closed',
+                details: { fileId, sessionId },
+            }),
+        };
+
+        const incidentFactory = incidentMap[type];
+        if (incidentFactory) {
+            const reporter = getGlobalReporter();
+            reporter.add(incidentFactory());
+        }
 
         // Best-effort: notify the local Go preview server so it can terminate the session.
         // This only applies when running via `main.go` (websocket is absent in dev mode / embedded usage).
@@ -79,7 +113,7 @@ export function useSecurity({
         } catch {
             // ignore
         }
-    }, [logEvent, onSecurityViolation, config.noDownload]);
+    }, [logEvent, onSecurityViolation, config.noDownload, fileId, sessionId]);
 
     const setDevToolsState = useCallback((open: boolean, method: 'window_size' | 'console_probe') => {
         if (typeof document === 'undefined') {

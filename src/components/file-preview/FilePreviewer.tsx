@@ -17,6 +17,7 @@ import { DocumentRenderer } from './renderers/DocumentRenderer';
 import { PresentationRenderer } from './renderers/PresentationRenderer';
 import { BinaryRenderer } from './renderers/BinaryRenderer';
 import { PdfRenderer } from './renderers/PdfRenderer';
+import { FolderRenderer } from './renderers/FolderRenderer';
 import { FileHistory } from './FileHistory';
 import { SecurityOverlay } from './SecurityOverlay';
 import { SecuritySettings } from './SecuritySettings';
@@ -50,7 +51,7 @@ export const FilePreviewer: React.FC<FilePreviewerProps> = ({
     const [searchMatches, setSearchMatches] = useState<SearchMatch[]>([]);
     const [currentMatchIndex, setCurrentMatchIndex] = useState(0);
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-    const [securityConfig, setSecurityConfig] = useState<SecurityConfig>(initialSecurityConfig);
+    const [securityConfig, setSecurityConfig] = useState<SecurityConfig>(initialSecurityConfig || MAX_SECURITY_CONFIG);
     const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);
     const [showAuditTrail, setShowAuditTrail] = useState(true);
     const printRef = useRef<HTMLDivElement>(null);
@@ -103,7 +104,7 @@ export const FilePreviewer: React.FC<FilePreviewerProps> = ({
     }, []);
 
 
-    const fileCategory = useMemo(() => getFileCategory(file.extension, file.type), [file]);
+    const fileCategory = useMemo(() => getFileCategory(file.extension, file.type, file.isFolder), [file]);
 
     const previewContext: PreviewContext = useMemo(() => ({
         file,
@@ -291,6 +292,8 @@ export const FilePreviewer: React.FC<FilePreviewerProps> = ({
                 return { showZoom: false, showRotation: false, showPagination: false, showSearch: true, showPrint: false };
             case 'document':
                 return { showZoom: true, showRotation: false, showPagination: false, showSearch: true, showPrint: true };
+            case 'folder':
+                return { showZoom: false, showRotation: false, showPagination: false, showSearch: false, showPrint: false };
             default:
                 return { showZoom: false, showRotation: false, showPagination: false, showSearch: false, showPrint: false };
         }
@@ -331,6 +334,8 @@ export const FilePreviewer: React.FC<FilePreviewerProps> = ({
                 return <DocumentRenderer ctx={previewContext} />;
             case 'presentation':
                 return <PresentationRenderer ctx={previewContext} />;
+            case 'folder':
+                return <FolderRenderer ctx={previewContext} />;
             case 'binary':
             default:
                 return <BinaryRenderer ctx={previewContext} />;

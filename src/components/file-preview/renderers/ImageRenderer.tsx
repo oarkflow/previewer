@@ -93,7 +93,7 @@ export const ImageRenderer: React.FC<ImageRendererProps> = ({ ctx }) => {
         <div
             ref={containerRef}
             className={cn(
-                "flex-1 flex items-center justify-center bg-preview-bg overflow-auto",
+                "flex-1 flex items-center justify-center bg-preview-bg overflow-hidden",
                 ctx.zoom > 1 && "cursor-grab",
                 isDragging && "cursor-grabbing"
             )}
@@ -104,17 +104,14 @@ export const ImageRenderer: React.FC<ImageRendererProps> = ({ ctx }) => {
             onWheel={handleWheel}
         >
             <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
+                initial={{ opacity: 0 }}
                 animate={{
                     opacity: isLoaded ? 1 : 0,
-                    scale: isLoaded ? 1 : 0.95,
-                    x: position.x,
-                    y: position.y,
                 }}
                 transition={{ duration: 0.2 }}
                 className="relative flex items-center justify-center"
                 style={{
-                    transform: `scale(${ctx.zoom}) rotate(${ctx.rotation}deg)`,
+                    transform: `translate(${position.x}px, ${position.y}px) scale(${ctx.zoom}) rotate(${ctx.rotation}deg)`,
                     transformOrigin: 'center center',
                 }}
             >

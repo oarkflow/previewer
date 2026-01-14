@@ -1,6 +1,6 @@
 import { SecurityConfig, SecurityEvent, SecurityEventType } from '@/types/security';
 interface UseSecurityOptions {
-    config: SecurityConfig;
+    config?: SecurityConfig;
     fileId?: string;
     sessionId?: string;
     onSecurityEvent?: (event: SecurityEvent) => void;
@@ -16,7 +16,7 @@ interface UseSecurityOptions {
  * - Keyboard shortcut blocking
  * - Activity logging
  */
-export declare function useSecurity({ config, fileId, sessionId, onSecurityEvent, onSecurityViolation, }: UseSecurityOptions): {
+export declare function useSecurity({ config: providedConfig, fileId, sessionId, onSecurityEvent, onSecurityViolation, }: UseSecurityOptions): {
     sessionId: string;
     devToolsOpen: boolean;
     isBlurred: boolean;

@@ -17,3 +17,7 @@ func Preview(r io.Reader) error {
 	}
 	return file.Preview(r)
 }
+
+func PreviewFolder(folderPath string) error {
+	return file.PreviewFolder(folderPath)
+}

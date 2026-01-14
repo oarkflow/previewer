@@ -6,6 +6,36 @@ export interface FileMeta {
     lastModified?: number;
     data: ArrayBuffer | Blob | File;
     url?: string;
+    isFolder?: boolean;
+    folderData?: FolderMeta;
+}
+export interface FolderItem {
+    id: string;
+    name: string;
+    type: 'file' | 'folder';
+    size: number;
+    extension?: string;
+    lastModified?: number;
+    path: string;
+    children?: FolderItem[];
+    data?: ArrayBuffer | Blob | File;
+    mimeType?: string;
+    isSecure?: boolean;
+    permissions?: {
+        canRead: boolean;
+        canWrite: boolean;
+        canDelete: boolean;
+    };
+}
+export interface FolderMeta {
+    path: string;
+    name: string;
+    items: FolderItem[];
+    totalSize: number;
+    totalFiles: number;
+    totalFolders: number;
+    lastModified?: number;
+    isSecure?: boolean;
 }
 export interface SearchMatch {
     pageIndex: number;
@@ -28,7 +58,7 @@ export interface PreviewContext {
     onSearchMatchesChange: (matches: SearchMatch[]) => void;
     onCurrentMatchChange: (index: number) => void;
 }
-export type FileCategory = 'pdf' | 'document' | 'spreadsheet' | 'presentation' | 'image' | 'audio' | 'video' | 'text' | 'code' | 'data' | 'binary';
+export type FileCategory = 'pdf' | 'document' | 'spreadsheet' | 'presentation' | 'image' | 'audio' | 'video' | 'text' | 'code' | 'data' | 'binary' | 'folder';
 export interface FileRenderer {
     category: FileCategory;
     extensions: string[];
@@ -42,6 +72,6 @@ export declare const FILE_CATEGORIES: Record<FileCategory, {
     color: string;
 }>;
 export declare const EXTENSION_MAP: Record<string, FileCategory>;
-export declare function getFileCategory(extension: string, mimeType?: string): FileCategory;
+export declare function getFileCategory(extension: string, mimeType?: string, isFolder?: boolean): FileCategory;
 export declare function getFileExtension(filename: string): string;
 export declare function formatFileSize(bytes: number): string;
