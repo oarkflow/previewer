@@ -1,4 +1,4 @@
-# Universal File Viewer SDK
+# File Viewer SDK
 
 A powerful, flexible React SDK for viewing various file types including PDFs, images, spreadsheets, documents, audio, video, and more.
 

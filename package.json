@@ -1,7 +1,7 @@
 {
     "name": "universal-file-viewer",
     "version": "1.0.0",
-    "description": "A universal file viewer SDK for React applications",
+    "description": "A File Viewer SDK for React applications",
     "type": "module",
     "main": "./dist/universal-file-viewer.umd.js",
     "module": "./dist/universal-file-viewer.es.js",

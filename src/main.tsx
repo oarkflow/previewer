@@ -23,7 +23,11 @@ if (typeof window !== "undefined") {
             ws.close();
         });
 
-        ws.addEventListener("close", () => window.clearInterval(heartbeat));
+        ws.addEventListener("close", () => {
+            window.clearInterval(heartbeat);
+            // Refresh the page when WebSocket connection closes
+            window.location.reload();
+        });
         ws.addEventListener("error", () => window.clearInterval(heartbeat));
     } catch {
         // If the websocket endpoint is unavailable (e.g., dev mode), fail silently.

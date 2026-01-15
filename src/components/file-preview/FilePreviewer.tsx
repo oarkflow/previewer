@@ -422,25 +422,6 @@ export const FilePreviewer: React.FC<FilePreviewerProps> = ({
                 </div>
             </SecurityOverlay>
 
-            {/* Keyboard shortcuts hint */}
-            <div className="absolute bottom-4 right-4 glass px-3 py-2 rounded-lg text-xs text-muted-foreground opacity-60 hover:opacity-100 transition-opacity">
-                <span className="font-medium">Shortcuts:</span> Esc close • ←→ pages • +/- zoom • wheel zoom • P print • F fullscreen
-            </div>
-
-            {/* Session info tooltip */}
-            {lastValidation && (
-                <div className="absolute top-16 left-4 glass px-3 py-1.5 rounded-lg text-xs text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                        <span>Session: {sessionId.slice(0, 8)}...</span>
-                        {expiresAt && (
-                            <span className="text-muted-foreground/60">
-                                Expires: {expiresAt.toLocaleTimeString()}
-                            </span>
-                        )}
-                    </div>
-                </div>
-            )}
-
             {/* Audit Trail Viewer */}
             {showAuditTrail && (
                 <AuditTrailViewer

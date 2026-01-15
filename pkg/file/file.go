@@ -385,21 +385,13 @@ func (s *previewServer) handleWS(w http.ResponseWriter, r *http.Request) {
 		s.wsConnections--
 		log.Printf("WebSocket closed (remaining connections: %d)", s.wsConnections)
 
-		// If we're serving a folder, only shut down when ALL connections are closed
-		// This allows file preview tabs to stay open while the folder view is still active
-		if s.folderPath != "" {
-			if s.wsConnections == 0 {
-				log.Println("All WebSocket connections closed, shutting down server")
-				s.signalClose()
-			} else {
-				log.Printf("Keeping server alive (%d connections still active)", s.wsConnections)
-			}
-			return
+		// Only shut down when ALL connections are closed
+		if s.wsConnections == 0 {
+			log.Println("All WebSocket connections closed, shutting down server")
+			s.signalClose()
+		} else {
+			log.Printf("Keeping server alive (%d connections still active)", s.wsConnections)
 		}
-
-		// For single file preview mode, shut down immediately
-		log.Println("WebSocket closed, shutting down server")
-		s.signalClose()
 	}()
 
 	for {

@@ -1,4 +1,4 @@
-// Universal File Viewer SDK
+// File Viewer SDK
 // Main entry point for the library
 
 // React and ReactDOM (bundled for consumers)

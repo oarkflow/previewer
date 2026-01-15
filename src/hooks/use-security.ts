@@ -368,7 +368,8 @@ export function useSecurity({
         };
 
         const handleBlur = () => {
-            logEvent('screenshot_attempt', { method: 'window_blur' });
+            // Blur content for privacy but don't log as screenshot attempt
+            // (window blur happens for many legitimate reasons)
             setIsBlurred(true);
             document.body.classList.add('security-blur');
         };

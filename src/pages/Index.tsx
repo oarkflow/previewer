@@ -3,6 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, Sparkles, Shield, Zap, Globe, Code } from 'lucide-react';
 import { FileDropZone, FilePreviewer } from '@/components/file-preview';
 import { FileHistory } from '@/components/file-preview/FileHistory';
+import { TermsAcceptanceDialog } from '@/components/TermsAcceptanceDialog';
+import { TermsOfServiceDialog } from '@/components/legal/TermsOfServiceDialog';
+import { PrivacyPolicyDialog } from '@/components/legal/PrivacyPolicyDialog';
+import { NDADialog } from '@/components/legal/NDADialog';
 import { FileMeta, getFileExtension } from '@/types/file-preview';
 import { useFileHistory } from '@/hooks/use-file-history';
 
@@ -12,6 +16,11 @@ const Index = () => {
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
     const autoLoadedOnce = useRef(false);
     const [isFromFolderView, setIsFromFolderView] = useState(false);
+
+    // Dialog states for legal pages
+    const [showTermsDialog, setShowTermsDialog] = useState(false);
+    const [showPrivacyDialog, setShowPrivacyDialog] = useState(false);
+    const [showNDADialog, setShowNDADialog] = useState(false);
 
     const {
         history,
@@ -385,6 +394,14 @@ const Index = () => {
 
     return (
         <div className="min-h-screen bg-background">
+            {/* Terms Acceptance Dialog */}
+            <TermsAcceptanceDialog />
+
+            {/* Legal Dialogs */}
+            <TermsOfServiceDialog open={showTermsDialog} onOpenChange={setShowTermsDialog} />
+            <PrivacyPolicyDialog open={showPrivacyDialog} onOpenChange={setShowPrivacyDialog} />
+            <NDADialog open={showNDADialog} onOpenChange={setShowNDADialog} />
+
             {/* File History Sidebar */}
             <FileHistory
                 history={history}
@@ -443,9 +460,32 @@ const Index = () => {
                                     <Sparkles className="w-4 h-4 text-primary" />
                                     <span className="text-sm">Built with React, TypeScript & Tailwind</span>
                                 </div>
-                                <p className="text-sm text-muted-foreground">
-                                    100% client-side • No data collection • WCAG 2.1 AA compliant
-                                </p>
+                                <div className="flex flex-col md:flex-row items-center gap-4 text-sm text-muted-foreground">
+                                    <span>100% client-side • No data collection • WCAG 2.1 AA compliant</span>
+                                    <span className="hidden md:inline">•</span>
+                                    <div className="flex items-center gap-3">
+                                        <button
+                                            onClick={() => setShowTermsDialog(true)}
+                                            className="hover:text-primary transition-colors"
+                                        >
+                                            Terms
+                                        </button>
+                                        <span>•</span>
+                                        <button
+                                            onClick={() => setShowPrivacyDialog(true)}
+                                            className="hover:text-primary transition-colors"
+                                        >
+                                            Privacy
+                                        </button>
+                                        <span>•</span>
+                                        <button
+                                            onClick={() => setShowNDADialog(true)}
+                                            className="hover:text-primary transition-colors"
+                                        >
+                                            NDA
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </footer>
