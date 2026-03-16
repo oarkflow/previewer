@@ -818,6 +818,37 @@ func (vfs *VirtualFileSystem) FileExists(path string) bool {
 	return exists
 }
 
+// FileInfo holds public metadata about a file in the VFS (without decrypted data)
+type FileInfo struct {
+	Path     string
+	Name     string
+	Size     int64
+	MimeType string
+	Hash     string
+	HMAC     string
+	ModTime  time.Time
+}
+
+// ListFiles returns metadata for all files in the VFS
+func (vfs *VirtualFileSystem) ListFiles() []FileInfo {
+	vfs.mu.RLock()
+	defer vfs.mu.RUnlock()
+
+	result := make([]FileInfo, 0, len(vfs.files))
+	for _, vf := range vfs.files {
+		result = append(result, FileInfo{
+			Path:     vf.Path,
+			Name:     vf.Name,
+			Size:     vf.Size,
+			MimeType: vf.MimeType,
+			Hash:     vf.Hash,
+			HMAC:     vf.HMAC,
+			ModTime:  vf.ModTime,
+		})
+	}
+	return result
+}
+
 // GetStats returns statistics about the VFS
 func (vfs *VirtualFileSystem) GetStats() (fileCount int, totalSize int64) {
 	vfs.mu.RLock()
